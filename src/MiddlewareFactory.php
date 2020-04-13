@@ -83,6 +83,10 @@ class MiddlewareFactory
         }
 
         if (is_callable($middleware)) {
+            if ($this->isController($middleware)) {
+                return $this->controller($middleware);
+            }
+
             return $this->callable($middleware);
         }
 
@@ -149,5 +153,30 @@ class MiddlewareFactory
             $pipeline->pipe($this->prepare($m));
         }
         return $pipeline;
+    }
+
+    /**
+     * Create a controller middleware based on a string/array callable middleware definition
+     */
+    public function controller($middleware) : Middleware\ControllerMiddleware
+    {
+        return new Middleware\ControllerMiddleware($this->rootContainer, $middleware);
+    }
+
+    /**
+     * Check if the callable middleware represents a class/object + method pair
+     * @param callable|string|array $middleware
+     */
+    private function isController(callable $middleware) : bool
+    {
+        if (is_array($middleware)) {
+            return true;
+        }
+
+        if (is_string($middleware) && strpos($middleware, '::')) {
+            return true;
+        }
+
+        return false;
     }
 }
