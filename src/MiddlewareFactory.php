@@ -13,6 +13,7 @@ namespace Mezzio;
 use Laminas\Stratigility\Middleware\CallableMiddlewareDecorator;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -55,9 +56,15 @@ class MiddlewareFactory
      */
     private $container;
 
-    public function __construct(MiddlewareContainer $container)
+    /**
+     * @var ContainerInterface
+     */
+    private $rootContainer;
+
+    public function __construct(MiddlewareContainer $container, ContainerInterface $rootContainer)
     {
         $this->container = $container;
+        $this->rootContainer = $rootContainer;
     }
 
     /**
