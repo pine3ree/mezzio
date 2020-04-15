@@ -43,7 +43,7 @@ class ControllerMiddlewareTest extends TestCase
         $this->handler   = $this->prophesize(RequestHandlerInterface::class)->reveal();
     }
 
-    public function buildControllerMiddleware(callable $middleware)
+    public function buildControllerMiddleware($middleware)
     {
         return new ControllerMiddleware($this->container->reveal(), $middleware);
     }
