@@ -41,7 +41,7 @@ class ControllerMiddleware implements MiddlewareInterface
 
     public function __construct(
         ContainerInterface $container,
-        callable $middleware
+        $middleware
     ) {
         $this->container = $container;
         $this->resolve($middleware);
@@ -62,21 +62,22 @@ class ControllerMiddleware implements MiddlewareInterface
     }
 
     /**
-     * Resolve the middleware definition into class/object and method properties
+     * Resolve the middleware definition into class/object and method
      *
+     * @return void
      * @throws InvalidMiddlewareException for invalid controller/method pair
      */
-    private function resolve(callable $middleware)
+    private function resolve($middleware)
     {
         if (is_string($middleware) && strpos($middleware, '::')) {
             $middleware = explode('::', $middleware);
         }
 
-        if (! is_array($middleware)) {
+        if (! is_array($middleware) || ! is_callable($middleware)) {
             throw new InvalidMiddlewareException(
-                "A callable controller-middleware must defined either in array "
-                . "form or in string form with FQCN and method name separated "
-                . "by a double colon!"
+                "A controller-middleware must defined as a callable array "
+                . "form [FQCN::class, 'method'] or a callable string form "
+                . "'My\Fully\Qualified\ClassName::method'!"
             );
         }
 
